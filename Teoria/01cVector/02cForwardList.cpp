@@ -44,7 +44,7 @@ struct cForwardList {
         if (head == nullptr)
             return;
 
-        if (tail == head){ 
+        if (tail == head) {
             delete tail;
             tail = head = nullptr;
             return;
@@ -70,10 +70,18 @@ struct cForwardList {
         head->previous = nullptr;
     }
 
-    Node& operator[](int index) {
+    int& operator[](int index) {
         Node* current = head;
+        if (index < 0)
+            throw out_of_range("Negative index not supported");
+
+        for (int i = 0; current != nullptr && i < index; i++, current = current->next);
+        
         if (current == nullptr)
-            return;
+            throw out_of_range("Index out of range");
+
+        return current->value;
+        
     }
 
     void print() {
@@ -83,6 +91,9 @@ struct cForwardList {
         cout << "  -->  nullptr" << endl;
     }
 };
+
+//---------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------
 
 int main() {
     cForwardList list;
@@ -106,6 +117,9 @@ int main() {
 
     list.print();
 
+    cout << list[5] << endl;
+    list[5] = 777;
+    list.print();
 
     return 0;
 }
