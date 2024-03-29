@@ -15,8 +15,8 @@ struct  cDeque {
     cDeque();
     void push_back(int);
     void push_front(int);
-    void pop_back(int);
-    void pop_front(int);
+    void pop_back();
+    void pop_front();
 
     void print();
 };
@@ -24,8 +24,31 @@ struct  cDeque {
 //---------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------
 
-int main()
-{
+int main() {
+    cDeque deque;
+    
+    int i = 0;
+
+    for (int j = i; i < j + 14; i++)
+        deque.push_back(i);
+    
+    deque.print();
+
+    for (int j = i; i < j + 8; i++)
+        deque.pop_front();
+
+    deque.print();
+
+    for (int j = i; i < j + 11; i++)
+        deque.push_front(i);
+
+    deque.print();
+
+    for (int j = i; i < j + 6; i++)
+        deque.pop_back();
+
+    deque.print();
+
     return 0;
 }
 
@@ -72,7 +95,7 @@ void cDeque::push_back(int value) {
 }
 
 void cDeque::push_front(int value) {
-    if (head_map = nullptr) {
+    if (head_map == nullptr) {
         head_map = tail_map = map + size / 2;
         *head_map = new Node();
         head_array = tail_array = (*head_map)->array + (*head_map)->size / 2;
@@ -95,7 +118,7 @@ void cDeque::push_front(int value) {
     // Falta agrandar map en caso sea necesario************
 }
 
-void cDeque::pop_back(int value) {
+void cDeque::pop_back() {
     if (tail_map == nullptr) {
         throw exception("Nothing to delete");
         return;
@@ -109,8 +132,7 @@ void cDeque::pop_back(int value) {
     }
 
     if (tail_array == (*tail_map)->array) {
-        tail_map--;
-        delete (tail_map + 1);
+        delete *(tail_map--);
         tail_array = (*tail_map)->array + (*tail_map)->size - 1;
         return;
     }
@@ -119,7 +141,7 @@ void cDeque::pop_back(int value) {
     return;
 }
 
-void cDeque::pop_front(int value) {
+void cDeque::pop_front() {
     if (head_map == nullptr) {
         throw exception("Nothing to delete");
         return;
@@ -133,8 +155,7 @@ void cDeque::pop_front(int value) {
     }
 
     if (head_array == (*head_map)->array + (*head_map)->size - 1) {
-        head_map++;
-        delete (head_map - 1);
+        delete *(head_map++);
         head_array = (*head_map)->array;
         return;
     }
@@ -155,6 +176,8 @@ void cDeque::print() {
     int* current_array = head_array;
     Node** current_map = head_map;
     while (current_array != tail_array) {
+        cout << "  " << *current_array;
+        
         if (current_array == (*current_map)->array + (*current_map)->size - 1) {
             current_map++;
             current_array = (*current_map)->array;
@@ -162,9 +185,10 @@ void cDeque::print() {
         }
         else
             current_array++;
-
-        cout << "  " << *current_array;
     }
     
-    cout << " ]\n";
+    cout << "  " << *current_array << " ]\n";
+    cout << "head: " << *head_array << endl;
+    cout << "tail: " << *tail_array << endl;
+    
 }
