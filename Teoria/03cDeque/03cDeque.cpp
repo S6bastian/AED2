@@ -18,7 +18,6 @@ struct  cDeque {
     void pop_back();
     void pop_front();
     int& operator[](int);
-    int SHITTY_TEST();
 
     void print();
 };
@@ -34,24 +33,34 @@ int main() {
     for (int j = i; i < j + 14; i++)
         deque.push_back(i);
     
+    deque[5] = 55;
+    cout << "Updated:" << deque[5] << endl;
+
     deque.print();
 
     for (int j = i; i < j + 8; i++)
         deque.pop_front();
+
+    deque[5] = 130;
+    cout << "Updated:" << deque[5] << endl;
 
     deque.print();
 
     for (int j = i; i < j + 11; i++)
         deque.push_front(i);
 
+    deque[6] = 260;
+    cout << "Updated:" << deque[6] << endl;
+
     deque.print();
 
     for (int j = i; i < j + 6; i++)
         deque.pop_back();
 
-    deque.print();
+    deque[0] = 320;
+    cout << "Updated:" << deque[0] << endl;
 
-    cout << deque.SHITTY_TEST();
+    deque.print();
 
     return 0;
 }
@@ -169,50 +178,39 @@ void cDeque::pop_front() {
 }
 
 int& cDeque::operator[](int index) {
-    Node** current_map = head_map;
-    int* current_array = head_array, current_size = 0;
-
     if (head_map == nullptr)
         throw exception("Null cDeque");
 
-    if (head_map == tail_map)
+    Node** current_map = head_map;
+    int current_size = 0, offset;
+
+    if (head_map == tail_map) {
         current_size += tail_array - head_array;
+        if (index <= current_size)
+            return *(head_array + index);
+    }
+
     
     else {
         current_size += (*current_map)->array + (*current_map)->size - head_array;
+        if (index <= current_size)
+            return *(head_array + index);
         current_map++;
 
         while (current_map != tail_map) {
             current_size += (*current_map)->size;
+            if (index <= current_size)
+                return *((*current_map)->array + index - (current_size - (*current_map)->size));
             current_map++;
         }
 
         current_size += tail_array - (*tail_map)->array;
+        if (index <= current_size)
+            return *((*current_map)->array + index - (current_size - (tail_array - (*tail_map)->array)));
     }
-}
 
-int cDeque::SHITTY_TEST() {
-    Node** current_map = head_map;
-    int* current_array = head_array, current_size = 0;
-
-    if (head_map == nullptr)
-        throw exception("Null cDeque");
-
-    if (head_map == tail_map)
-        current_size += tail_array - head_array;
-
-    else {
-        current_size += (*current_map)->array + (*current_map)->size - head_array;
-        current_map++;
-
-        while (current_map != tail_map) {
-            current_size += (*current_map)->size;
-            current_map++;
-        }
-
-        current_size += tail_array - (*tail_map)->array;
-    }
-    return current_size;
+    if (index <= current_size)
+        throw out_of_range("Index out of range");
 }
 
 void cDeque::print() {
@@ -238,8 +236,8 @@ void cDeque::print() {
             current_array++;
     }
     
-    cout << "  " << *current_array << " ]\n";
-    cout << "head: " << *head_array << endl;
-    cout << "tail: " << *tail_array << endl;
+    cout << "  " << *current_array << "  ]\n";
+    cout << "Head: " << *head_array << endl;
+    cout << "Tail: " << *tail_array << endl << endl;
     return;
 }
