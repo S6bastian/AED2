@@ -46,19 +46,27 @@ int main() {
 
     deque.print();
 
-    for (int j = i; i < j + 11; i++)
+    for (int j = i; i < j + 12; i++)
         deque.push_front(i);
 
-    deque[6] = 260;
-    cout << "Updated:" << deque[6] << endl;
+    deque[7] = 260;
+    cout << "Updated:" << deque[7] << endl;
+
+    deque[16] = 1300;
+    cout << "Updated:" << deque[16] << endl;
 
     deque.print();
 
     for (int j = i; i < j + 6; i++)
         deque.pop_back();
 
-    deque[0] = 320;
+    deque[0] = 330;
     cout << "Updated:" << deque[0] << endl;
+
+    deque.print();
+
+    for (int j = 0; j < 12; j++)
+        deque[j] = j * 10;
 
     deque.print();
 
@@ -182,7 +190,7 @@ int& cDeque::operator[](int index) {
         throw exception("Null cDeque");
 
     Node** current_map = head_map;
-    int current_size = 0, offset;
+    int current_size = 0;
 
     if (head_map == tail_map) {
         current_size += tail_array - head_array;
@@ -193,23 +201,24 @@ int& cDeque::operator[](int index) {
     
     else {
         current_size += (*current_map)->array + (*current_map)->size - head_array;
-        if (index <= current_size)
+        int head_array_size = current_size;
+        if (index < current_size)
             return *(head_array + index);
         current_map++;
 
         while (current_map != tail_map) {
             current_size += (*current_map)->size;
-            if (index <= current_size)
-                return *((*current_map)->array + index - (current_size - (*current_map)->size));
+            if (index < current_size)
+                return *((*current_map)->array + ((index - (current_size % (*current_map)->size)) % (*current_map)->size));
             current_map++;
         }
 
-        current_size += tail_array - (*tail_map)->array;
-        if (index <= current_size)
-            return *((*current_map)->array + index - (current_size - (tail_array - (*tail_map)->array)));
+        current_size += tail_array - (*tail_map)->array + 1;
+        if (index < current_size)
+            return *((*current_map)->array + (((index - head_array_size) % (*current_map)->size)));
     }
 
-    if (index <= current_size)
+    if (index < current_size)
         throw out_of_range("Index out of range");
 }
 
@@ -240,4 +249,4 @@ void cDeque::print() {
     cout << "Head: " << *head_array << endl;
     cout << "Tail: " << *tail_array << endl << endl;
     return;
-}
+}   
