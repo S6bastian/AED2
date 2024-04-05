@@ -37,10 +37,26 @@ struct Elementor { //xd
 
 int main(){
     Elementor elementor;
-    int i = 0;
+    
+    elementor.print();
 
-    for (; i < 11;i++)
+    for (int i = 9; i > 0; i -= 2)
         elementor.add(i);
+
+    elementor.print();
+    
+    for (int i = 0; i < 20; i += 2)
+        elementor.add(i);
+
+    elementor.print();
+
+    for (int i = 39; i > 9; i -= 2)
+        elementor.add(i);
+
+    elementor.print();
+
+    for (int i = 0; i < 40; i += 5)
+        elementor.del(i);
 
     elementor.print();
 
@@ -77,7 +93,7 @@ bool Elementor::find(int value, int*& element_position, Node*& element_array) {
     element_array = first_array;
     element_position = first_element;
 
-    while (value < *element_position && *element_position != *last_element) {
+    while (*element_position < value && *element_position != *last_element) {
         if (element_position == element_array->array + element_array->size - 1) {
             element_array = element_array->next;
             element_position = element_array->array;
@@ -93,6 +109,7 @@ bool Elementor::find(int value, int*& element_position, Node*& element_array) {
 }
 
 void Elementor::add(int value) {
+    //Si la lista está vacía
     if (first_array == nullptr) {
         first_array = last_array = new Node();
         first_element = last_element = first_array->array;
@@ -100,19 +117,7 @@ void Elementor::add(int value) {
         return;
     }
 
-    if (first_element == last_element) {
-        last_element++;
-
-        if (*first_element > value) {
-            *last_element = *first_element;
-            *first_element = value;
-        }
-        else
-            *last_element = value;
-        
-        return;
-    }
-
+    //Si contriene algun elemento
     int* current_element = first_element, tmp1 = value, tmp2;
     Node* current_array = first_array;
 
@@ -131,9 +136,11 @@ void Elementor::add(int value) {
             current_element++;
     }
 
-    tmp2 = *current_element;
-    *current_element = tmp1;
-    tmp1 = tmp2;
+    if (*current_element >= value) {
+        tmp2 = *current_element;
+        *current_element = tmp1;
+        tmp1 = tmp2;
+    }
 
     if (current_element == current_array->array + current_array->size - 1) {
         current_array->next = new Node();
@@ -188,7 +195,14 @@ void Elementor::print() {
     Node* current_array = first_array;
     int* current_element = first_element;
     
-    cout << "Elementor -->  [";
+    cout << "Elementor -->  ";
+
+    if (current_array == nullptr) {
+        cout << "nullptr" << endl;
+        return;
+    }
+
+    cout << "[";
     
     while (current_element != last_element) {
         if (current_element == current_array->array + current_array->size - 1) {
@@ -203,5 +217,5 @@ void Elementor::print() {
         }
     }
 
-    cout << " " << *current_element << " ]";
+    cout << " " << *current_element << " ]" << endl;
 }
