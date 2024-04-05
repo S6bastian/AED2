@@ -60,6 +60,20 @@ int main(){
 
     elementor.print();
 
+    for (int i = 31; i < 40; i++)
+        elementor.del(i);
+
+    elementor.print();
+
+    elementor.del(29);
+
+    elementor.print();
+    
+    for (int i = 0; i < 29; i++)
+        elementor.del(i);
+
+    elementor.print();
+
     return 0;
 }
 
@@ -93,6 +107,9 @@ bool Elementor::find(int value, int*& element_position, Node*& element_array) {
     element_array = first_array;
     element_position = first_element;
 
+    if (first_array == nullptr)
+        return false;
+
     while (*element_position < value && *element_position != *last_element) {
         if (element_position == element_array->array + element_array->size - 1) {
             element_array = element_array->next;
@@ -117,7 +134,7 @@ void Elementor::add(int value) {
         return;
     }
 
-    //Si contriene algun elemento
+    //Si contiene algún elemento
     int* current_element = first_element, tmp1 = value, tmp2;
     Node* current_array = first_array;
 
@@ -144,6 +161,7 @@ void Elementor::add(int value) {
 
     if (current_element == current_array->array + current_array->size - 1) {
         current_array->next = new Node();
+        current_array->next->previous = current_array;
         current_array = last_array = current_array->next;
         current_element = last_element = current_array->array;
     }
@@ -156,7 +174,7 @@ void Elementor::add(int value) {
 }
 
 void Elementor::del(int value) {
-    Node* element_array = nullptr, * array_backtrack = nullptr;
+    Node* element_array = nullptr;
     int* element_position = nullptr, * element_backtrack = nullptr;
     
     if (find(value, element_position, element_array)) {
@@ -171,7 +189,6 @@ void Elementor::del(int value) {
             element_backtrack = element_position;
 
             if (element_position == element_array->array + element_array->size - 1) {
-                array_backtrack = element_array;
                 element_array = element_array->next;
                 element_position = element_array->array;
             }
@@ -182,11 +199,14 @@ void Elementor::del(int value) {
         }
 
         if (element_position == last_array->array) {
-            delete last_array;
-            last_array = array_backtrack;
+            last_array = last_array->previous;
+            delete last_array->next;
+            last_element = last_array->array + last_array->size - 1;
+            return;
         }
 
-        last_element = element_backtrack;
+
+        element_backtrack == nullptr ? last_element-- : last_element = element_backtrack;
         return;
     }
 }
