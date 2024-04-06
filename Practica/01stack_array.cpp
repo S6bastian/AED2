@@ -12,7 +12,7 @@ struct Stack {
 
     Stack();
     bool push(int);
-    bool pop(int &);
+    bool pop(int&);
     void print();
 
 };
@@ -23,21 +23,24 @@ struct Stack {
 int main()
 {
     Stack stack1;
-    
-    for (int i = 0; i < 10; i++)
+
+    for (int i = 0; i < 11; i++)
         stack1.push(i);
+    
     stack1.print();
 
     for (int i = 0, x; i < 3; i++) {
         stack1.pop(x);
         cout << "Popped: " << x << endl;
     }
+
     stack1.print();
 
     for (int i = 20; i < 25; i++)
         stack1.push(i);
-    stack1.print();
 
+    stack1.print();
+    
     return 0;
 }
 
@@ -50,16 +53,20 @@ Stack::Stack() {
 }
 
 bool Stack::push(int value) {
-    if (top == lastItem)
+    if (top == lastItem) {
+        cout << "Full stack :(" << endl;
         return false;
+    }
     top == nullptr ? top = array : top++;
     *top = value;
     return true;
 }
 
-bool Stack::pop(int &x) {
-    if (top == nullptr)
+bool Stack::pop(int& x) {
+    if (top == nullptr) {
+        cout << "Empty stack :(" << endl;
         return false;
+    }
     x = *top;
     top == array ? top = nullptr : top--;
     return true;
