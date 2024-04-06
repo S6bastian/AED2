@@ -67,7 +67,7 @@ bool Stack::pop(int &x) {
 
 void Stack::print() {
     cout << "Stack --> [ ";
-    for (int* a = array; a <= lastItem; a++)
+    for (int* a = array; a <= top; a++)
         cout << *a << " ";
     cout << "]" << endl;
 }
