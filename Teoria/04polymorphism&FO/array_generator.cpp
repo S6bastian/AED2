@@ -35,9 +35,9 @@ void writeArrayToFile(long* array, long size, const std::string& filename) {
 }
 
 int main() {
-    long n = 1000000;
+    long n = 10000000;
     long min = 0;
-    long max = 1000000;
+    long max = 10000000;
     long* data = generateRandomArray(n, min, max);
 
     // Nombre del archivo de salida
