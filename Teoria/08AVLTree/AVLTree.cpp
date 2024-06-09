@@ -2,6 +2,8 @@
 #include <stack>
 using namespace std;
 
+//Node
+
 struct Node {
     int value;
     int height;
@@ -12,6 +14,8 @@ struct Node {
 
 //*********************************************************************************************
 
+//AVLTree
+
 class AVLTree {
 private:
     Node* root;
@@ -19,12 +23,13 @@ private:
     int getBalance(Node*);
     int updateHeight(Node*);
     void balanceTree(Node**);   // only when getBalance() is 2 or -2
+    Node** getSuccessor(Node**, stack<Node**>&);
     void preorder(Node*);
 public:
     AVLTree();
     bool search(int, Node**&, stack<Node**>&);
     bool insert(int);
-    bool detele(int);
+    bool remove(int);
     void print();
 };
 
@@ -32,16 +37,27 @@ public:
 //---------------------------------------------------------------------------------------------
 
 int main() {
+    cout << "************ test1 ************" << endl;
+    cout << "Insert:" << endl;
     AVLTree test1;
     for (int i = 0; i < 20; i += 3) {
         test1.insert(i);
         test1.print();
     }
+    cout << "Remove: " << endl;
+    test1.remove(9);
     test1.print();
+    test1.remove(12);
+    test1.print();
+    test1.remove(15); //error
+    test1.print();
+
 }
 
 //---------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------
+
+//Node
 
 Node::Node(int v) {
     value = v;
@@ -50,6 +66,8 @@ Node::Node(int v) {
 }
 
 //*********************************************************************************************
+
+//AVLTree
 
 AVLTree::AVLTree() {
     root = nullptr;
@@ -100,7 +118,20 @@ void AVLTree::balanceTree(Node** parent) {
         root = *parent;
 }
 
-void AVLTree::preorder(Node* root){
+Node** AVLTree::getSuccessor(Node** successor, stack<Node**>& path) {
+    if ((*successor)->nodes[1] == nullptr)
+        return nullptr;
+
+    successor = &(*successor)->nodes[1];
+    path.push(successor);
+    while ((*successor)->nodes[0]) {
+        successor = &(*successor)->nodes[0];
+        path.push(successor);
+    }
+    return successor;
+}
+
+void AVLTree::preorder(Node* root) {
     if (root == nullptr)
         return;
     cout << root->value << " ";
@@ -120,7 +151,7 @@ bool AVLTree::insert(int value) {
         root = new Node(value);
         return 1;
     }
-    
+
     Node** current = nullptr;
     stack<Node**> path;
     if (search(value, current, path))
@@ -129,11 +160,47 @@ bool AVLTree::insert(int value) {
     *current = new Node(value);
 
     for (; !path.empty(); path.pop()) {
-            updateHeight(*path.top());
+        updateHeight(*path.top());
 
         if (getBalance(*path.top()) == 2 || getBalance(*path.top()) == -2)
             balanceTree(path.top());
     }
+
+    return 1;
+}
+
+bool AVLTree::remove(int value) {
+    Node** current = nullptr;
+    stack<Node**> path;
+    if (!search(value, current, path)) {
+        return 0;
+    }
+    Node** tmp = getSuccessor(current, path);
+    if (!*tmp) {
+        Node* tmp1 = *current;
+        *current = (*current)->nodes[0];
+        delete tmp1;
+        path.pop();
+    }
+    else {
+        (*current)->value = (*tmp)->value;
+        Node* tmp1 = *tmp;
+        *tmp = (*tmp)->nodes[1];
+        delete tmp1;
+        path.pop();
+    }
+
+    for (; !path.empty(); path.pop()) {
+        if (getBalance(*path.top()) == 2 || getBalance(*path.top()) == -2)
+            balanceTree(path.top());
+        else
+            updateHeight(*path.top());
+    }
+
+    if (getBalance(*current) == 2 || getBalance(*current) == -2)
+        balanceTree(current);
+    else
+        updateHeight(*current);
 
     return 1;
 }
