@@ -156,17 +156,10 @@ Node** AVLTree::getSuccessor(Node** successor, stack<Node**>& path) {
     }
     return successor;
 }
-//-----------------------POSIBLE ELIMINACION DE PREORDER
+
 void AVLTree::preorder(Node* root) {
     if (root == nullptr)
         return;
-    /*if (root->nodes[0]) {
-        
-
-        for (int i = 0; i < root->height; i++) {
-
-        }
-    }*/
     cout << root->value << " ";
     preorder(root->nodes[0]);
     preorder(root->nodes[1]);
